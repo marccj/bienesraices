@@ -43,15 +43,13 @@ function javascript() {
 function imagenes() {
     return src(paths.imagenes)
         .pipe(cache(imagemin({ optimizationLevel: 3})))
-        .pipe(dest('build/img'))
-        .pipe(notify({ message: 'Imagen Completada'}));
+        .pipe(dest('build/img'));
 }
 
 function versionWebp() {
     return src(paths.imagenes)
         .pipe( webp() )
-        .pipe(dest('build/img'))
-        .pipe(notify({ message: 'Imagen Completada'}));
+        .pipe(dest('build/img'));
 }
 
 
@@ -61,5 +59,7 @@ function watchArchivos() {
     watch( paths.imagenes, imagenes );
     watch( paths.imagenes, versionWebp );
 }
+
+exports.buildpro = parallel(css, javascript,  imagenes, versionWebp);
   
 exports.default = parallel(css, javascript,  imagenes, versionWebp, watchArchivos ); 
