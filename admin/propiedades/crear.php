@@ -7,6 +7,11 @@
     //Errores
     $errores = [];
     
+    // Consultamos vendedores
+    $query = "SELECT * FROM vendedor;";
+    $result = mysqli_query($db, $query);
+
+    // Inicializamos variables
     $titulo = '';
     $precio = '';
     $descripcion = '';
@@ -58,9 +63,18 @@
         if(empty($errores)){
             // Insertar en la bdd
             $query = "INSERT INTO propiedades (titulo, precio, descripcion, habitaciones, wc, estacionamiento, vendedorId)
-            VALUES ('$titulo', '$precio', '$descripcion', '$habitaciones', '$wc', '$estacionamientos', '$vendedorId')";
+            VALUES ('$titulo', '$precio', '$descripcion', '$habitaciones', '$wc', '$estacionamientos', '$vendedorId');";
+
+            echo $query;
 
             $result = mysqli_query($db, $query);
+            
+            if($result) {
+                //Redir al usuario
+                header("Location: /admin");
+            }
+
+
         }
 
 
@@ -93,9 +107,7 @@
                 <input type="file" name="imagen" id="imagen" accept="image/jpeg, image/png">
 
                 <label for="descripcion">Descripcion</label>
-                <textarea id="descripcion" name="descripcion">
-                    <?php echo $descripcion; ?> 
-                </textarea>
+                <textarea id="descripcion" name="descripcion"><?php echo $descripcion; ?></textarea>
             </fieldset>
 
             <fieldset>
@@ -117,8 +129,9 @@
 
                 <select name="vendedor" id="vendedor">
                     <option value="">-- Seleccione --</option>
-                    <option value="1">Juan</option>
-                    <option value="2">Karen</option>
+                    <?php while($row = mysqli_fetch_assoc($result)) : ?>
+                        <option <?php echo $vendedorId === $row["id"] ? "selected" : ""?> value="<?php echo $row["id"] ?>"><?php echo $row['nombre'] . " " . $row['apellido'] ?></option>
+                    <?php endwhile ?>
                 </select>
             </fieldset>
 
